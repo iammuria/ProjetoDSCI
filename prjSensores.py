@@ -167,8 +167,13 @@ class Variaveis():
         except KeyboardInterrupt:
             return False
     # ----------------------------------------------------------------- SET -----------------------------------------------------------------
-    def setTemp(self, temp):
-        self.temp = temp
+    def setTemp(self, setT):
+        LED = 17
+        GPIO.setup(LED, GPIO.OUT)
+        if setT == 1:
+            GPIO.output(LED, True)
+        if setT == 0:
+            GPIO.output(LED, False)  
 
     def setLumi(self, setL):
         LED = 27
