@@ -1,4 +1,5 @@
 from prjClass import Variaveis
+from datetime import datetime
 import pandas
 # C - Create
 # R - Read/ReadAll
@@ -16,12 +17,16 @@ class VariaveisDAO():
     
     def create(self, var):
         df = self.open()
-        new_id = self.get_new_id(df)
         
+        new_id = self.get_new_id(df)
         var.id = new_id
         
+        hour = datetime.now()
+        hour = hour.strftime('%H:%M:%S')
+        var.hora = hour
+        
         new_row = pandas.DataFrame(data=[[
-                                    new_id, var.temp, var.lumi, var.pres
+                                    new_id, hour, var.temp, var.lumi, var.pres
                                     ]],
                                     columns = df.columns)
         df = df.append(new_row)
@@ -47,6 +52,7 @@ class VariaveisDAO():
         var = Variaveis()
 
         var.id = id
+        var.hora = df.iloc[i].hora
         var.temp = df.iloc[i].temp
         var.lumi = df.iloc[i].lumi
         var.pres = df.iloc[i].pres
@@ -64,6 +70,7 @@ class VariaveisDAO():
         for i in range(len(df)):
             var = Variaveis()
             var.id = df.iloc[i].id
+            var.hora = df.iloc[i].hora
             var.temp = df.iloc[i].temp
             var.lumi = df.iloc[i].lumi
             var.pres = df.iloc[i].pres
@@ -84,7 +91,8 @@ class VariaveisDAO():
             self.save(df)
             
             i += 1
-
+        df.reset_index(drop = True, inplace = True)
+        
     def get_index(self, id, df):
 
         index = df.loc[df.id == id, :].index[0]
@@ -107,9 +115,8 @@ if __name__ == '__main__':
     
     dao.create(variaveis)
     
-    print(dao.open())
+    '''print(dao.open())
     
     dao.delete()
     
-    print(dao.open())
-    
+    print(dao.open())'''
