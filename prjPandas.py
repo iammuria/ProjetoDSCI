@@ -1,11 +1,7 @@
 from prjClass import Variaveis
 from datetime import datetime
 import pandas
-# C - Create
-# R - Read/ReadAll
-# U - Update
-# D - Delete
-#Vou fazer: Create / ReadAll / DeleteAll
+
 class VariaveisDAO():
     
     def open(self):
@@ -42,9 +38,8 @@ class VariaveisDAO():
             
         return id
     
-###############################################################################
     
-    def read(self,id):
+    '''def read(self,id):
 
         df = self.open()
         i = self.get_index(id, df)
@@ -52,7 +47,7 @@ class VariaveisDAO():
         var = Variaveis()
 
         var.id = id
-        var.hora = df.iloc[i].hora
+        var.hora = df.iloc[i].hour
         var.temp = df.iloc[i].temp
         var.lumi = df.iloc[i].lumi
         var.pres = df.iloc[i].pres
@@ -64,20 +59,20 @@ class VariaveisDAO():
 
         df = self.open()
 
-        var = []
+        vars = []
 
 
         for i in range(len(df)):
             var = Variaveis()
             var.id = df.iloc[i].id
-            var.hora = df.iloc[i].hora
+            var.hora = df.iloc[i].hour
             var.temp = df.iloc[i].temp
             var.lumi = df.iloc[i].lumi
             var.pres = df.iloc[i].pres
 
-            var.append(var)
+            vars.append(var)
 
-        return var
+        return var'''
 
     def delete(self):
         df = self.open()
@@ -102,7 +97,7 @@ class VariaveisDAO():
 ###############################################################################
 
 if __name__ == '__main__':
-    variaveis = Variaveis(20,100,1)
+    '''variaveis = Variaveis(20,100,1)
     
     dao = VariaveisDAO()
     dao.create(variaveis)
@@ -114,9 +109,8 @@ if __name__ == '__main__':
     dao = VariaveisDAO()
     
     dao.create(variaveis)
-    
-    '''print(dao.open())
-    
-    dao.delete()
-    
     print(dao.open())'''
+  
+    #dao.delete()
+    
+    #print(dao.open())
