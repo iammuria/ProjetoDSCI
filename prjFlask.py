@@ -1,11 +1,12 @@
 from flask import Flask
-from prjClass import Variaveis
-
+from prjSensores import Variaveis
+from prjPandas import VariaveisDAO
 from json import JSONEncoder
 
 app = Flask(__name__)
 
-var = Variaveis(0, 0, 1)
+var = Variaveis()
+saveVar = VariaveisDAO()
 
 @app.route("/")
 def saudacoes():
@@ -25,6 +26,7 @@ def definir(temp, lumi):
 
 @app.route("/ler-medidas/")
 def ler():
+    saveVar.create(var)
     return var.getAll()
         
 app.run(port='8000', host='192.168.100.84')
