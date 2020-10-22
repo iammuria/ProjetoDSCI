@@ -4,6 +4,7 @@
 # ----------- Conexões -----------
 # Sensor DHT11 -> Pino 2
 # Sensor HC-SR04 -> TRIG Pino 7 | ECHO Pino 8
+# Sensor LDR -> Pino 22
 import RPi.GPIO as GPIO
 import dht11
 import sys
@@ -105,7 +106,7 @@ class Variaveis():
                 self.lumi = 100
                 return self.lumi 
             if value >= 150000 and value < 300000:
-                rself.lumi = 90
+                self.lumi = 90
                 return self.lumi
             if value >= 300000 and value < 450000:
                 self.lumi = 85
@@ -169,11 +170,13 @@ class Variaveis():
     def setTemp(self, temp):
         self.temp = temp
 
-    def setLumi(self, lumi):
-        self.lumi = lumi
-
-    def setPres(self):
-        return self.pres
+    def setLumi(self, setL):
+        LED = 27
+        GPIO.setup(LED, GPIO.OUT)
+        if setL == 1:
+            GPIO.output(LED, True)
+        if setL == 0:
+            GPIO.output(LED, False)   
 
     def getAll (self):
         self.temp = self.getTemp()
@@ -194,9 +197,4 @@ class Variaveis():
             return f'Temperatura: {self.temp} ºC  ' + f'Luminosidade: {self.lumi} %  ' + 'A sala está vazia'
         else:
             return f'Temperatura: {self.temp} ºC  ' + f'Luminosidade: {self.lumi} %  ' + 'Há alguém na sala'
-    
-if __name__ == '__main__':
-    while True:
-        val = Variaveis()
-        print(val.printAll())
     
