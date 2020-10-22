@@ -15,9 +15,7 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
 class Variaveis():
-    
     def __init__(self, temp=0, lumi = 0, pres = 0):
-        global auxTemp, auxPres, auxLumi
         self.id = None
         self.hora = None
         self.temp = temp
@@ -34,12 +32,11 @@ class Variaveis():
         if temp.is_valid():
             self.temp = temp.temperature
             if self.temp >= 14:
-                self.auxTemp = self.temp
                 return self.temp
             else:
-                return self.auxTemp
+                return self.temp
         else:
-            return self.auxTemp
+            return False
     
     # ------------------------- LEITURA DA PRESENÇA -------------------------
     # Se a distância for menor que 50cm -> há alguém (1) | se não -> vazio (0)
@@ -71,14 +68,12 @@ class Variaveis():
         if distance > 2 and distance < 400:
             if distance < 50:
                 self.pres = 1
-                self.auxPres = self.pres
                 return self.pres
             else:
                 self.pres = 0
-                self.auxPres = self.pres
                 return self.pres
         else:
-            return self.auxPres              
+            return False              
     
     # ------------------------- LEITURA DA LUMINOSIDADE -------------------------
     #0 a 100%
@@ -86,7 +81,6 @@ class Variaveis():
     #45% -> 1650000 40% -> 1800000 35% -> 1950000 30% -> 2100000 25% -> 2250000 20% -> 2400000 15% -> 2550000 10% -> 2700000 5% -> 2850000 0% -> 3000000
 
     def getLumi(self):
-        auxLumi = self.lumi
         delayt = .1 
         value = 0
         ldr = 22
@@ -170,7 +164,7 @@ class Variaveis():
             
             return switcher.get(value, "nothing")
         except KeyboardInterrupt:
-            return auxLumi
+            return False
     # ----------------------------------------------------------------- SET -----------------------------------------------------------------
     def setTemp(self, temp):
         self.temp = temp
