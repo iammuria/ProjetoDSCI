@@ -93,24 +93,3 @@ class VariaveisDAO():
         index = df.loc[df.id == id, :].index[0]
 
         return index
-
-###############################################################################
-
-if __name__ == '__main__':
-    '''variaveis = Variaveis(20,100,1)
-    
-    dao = VariaveisDAO()
-    dao.create(variaveis)
-        
-    variaveis.setTemp(25)
-    variaveis.setLumi(50)
-    variaveis.setPres(0)
-    
-    dao = VariaveisDAO()
-    
-    dao.create(variaveis)
-    print(dao.open())'''
-  
-    #dao.delete()
-    
-    #print(dao.open())
