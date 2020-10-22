@@ -28,18 +28,21 @@ class Variaveis():
     # ------------------------- LEITURA DA TEMPERATURA -------------------------
     # Quando dá erro informa o valor da última leitura
     def getTemp(self):
-        auxTemp = self.temp
+        self.auxTemp = self.temp
 
         pino = dht11.DHT11(pin = 2)
 
         temp = pino.read()
 
-        if temp.is_valid() and temp >= 14:
+        if temp.is_valid():
             self.temp = temp.temperature
-            auxTemp = self.temp
-            return self.temp
+            if self.temp >= 14:
+                self.auxTemp = self.temp
+                return self.temp
+            else:
+                return self.auxTemp
         else:
-            return auxTemp
+            return self.auxTemp
     
     # ------------------------- LEITURA DA PRESENÇA -------------------------
     # Se a distância for menor que 50cm -> há alguém (1) | se não -> vazio (0)
@@ -71,14 +74,14 @@ class Variaveis():
         if distance > 2 and distance < 400:
             if distance < 50:
                 self.pres = 1
-                auxPres = self.pres
+                self.auxPres = self.pres
                 return self.pres
             else:
                 self.pres = 0
-                auxPres = self.pres
+                self.auxPres = self.pres
                 return self.pres
         else:
-            return auxPres              
+            return self.auxPres              
     
     # ------------------------- LEITURA DA LUMINOSIDADE -------------------------
     #0 a 100%
