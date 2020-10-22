@@ -14,11 +14,10 @@ import json
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
-global auxTemp, auxPres, auxLumi
-    
 class Variaveis():
     
     def __init__(self, temp=0, lumi = 0, pres = 0):
+        global auxTemp, auxPres, auxLumi
         self.id = None
         self.hora = None
         self.temp = temp
@@ -28,8 +27,6 @@ class Variaveis():
     # ------------------------- LEITURA DA TEMPERATURA -------------------------
     # Quando dá erro informa o valor da última leitura
     def getTemp(self):
-        self.auxTemp = self.temp
-
         pino = dht11.DHT11(pin = 2)
 
         temp = pino.read()
