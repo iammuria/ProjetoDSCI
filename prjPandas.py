@@ -1,3 +1,6 @@
+# Código para salvar os dados de leitura dos sensores(hora, temperatura, luminosidade, presença (0 -> vazio | 1 -> há alguém))
+# Autora: Múria Viana
+# Disciplina de Desenvolvimento de Sistemas Computacionais I | Sandeco
 from prjClass import Variaveis
 from datetime import datetime
 import pandas
