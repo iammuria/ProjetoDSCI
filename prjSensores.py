@@ -9,34 +9,37 @@ import dht11
 import sys
 import time
 import signal
+import json
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
 global auxTemp, auxPres, auxLumi
-auxTemp = 0
-auxPres = 0
-auxLumi = 0
     
-class leituraSensores():
+class Variaveis():
     
-    def __init__(self):
-        pass
-    
+    def __init__(self, temp=0, lumi = 0, pres = 0):
+        self.id = None
+        self.hora = None
+        self.temp = temp
+        self.lumi = lumi
+        self.pres = pres
+    # ----------------------------------------------------------------- GET -----------------------------------------------------------------
     # ------------------------- LEITURA DA TEMPERATURA -------------------------
     # Quando dá erro informa o valor da última leitura
     def getTemp(self):
-        self.auxTemp = auxTemp
+        auxTemp = self.temp
 
         pino = dht11.DHT11(pin = 2)
 
         temp = pino.read()
-        
-        if temp.is_valid():
-            self.auxTemp = temp.temperature
-            return temp.temperature
+
+        if temp.is_valid() and temp >= 14:
+            self.temp = temp.temperature
+            auxTemp = self.temp
+            return self.temp
         else:
-            return self.auxTemp
+            return auxTemp
     
     # ------------------------- LEITURA DA PRESENÇA -------------------------
     # Se a distância for menor que 50cm -> há alguém (1) | se não -> vazio (0)
@@ -67,11 +70,13 @@ class leituraSensores():
 
         if distance > 2 and distance < 400:
             if distance < 50:
-                auxPres = 1
-                return 1
+                self.pres = 1
+                auxPres = self.pres
+                return self.pres
             else:
-                auxPres = 0
-                return 0
+                self.pres = 0
+                auxPres = self.pres
+                return self.pres
         else:
             return auxPres              
     
@@ -81,7 +86,7 @@ class leituraSensores():
     #45% -> 1650000 40% -> 1800000 35% -> 1950000 30% -> 2100000 25% -> 2250000 20% -> 2400000 15% -> 2550000 10% -> 2700000 5% -> 2850000 0% -> 3000000
 
     def getLumi(self):
-        self.auxLumi = auxLumi
+        auxLumi = self.lumi
         delayt = .1 
         value = 0
         ldr = 22
@@ -101,60 +106,103 @@ class leituraSensores():
  
         try:
             value = rc_time(ldr)
-            self.auxLumi = value
+            auxLumi = value
             if value >= 0 and value < 150000:
-                return 100 
+                self.lumi = 100
+                return self.lumi 
             if value >= 150000 and value < 300000:
-                return 90 
+                rself.lumi = 90
+                return self.lumi
             if value >= 300000 and value < 450000:
-                return 85
+                self.lumi = 85
+                return self.lumi
             if value >= 450000 and value < 600000:
-                return 80
+                self.lumi = 80
+                return self.lumi
             if value >= 600000 and value < 750000:
-                return 75
+                self.lumi = 75
+                return self.lumi
             if value >= 750000 and value < 1050000:
-                return 70
+                self.lumi = 70
+                return self.lumi
             if value >= 1050000 and value < 1200000:
-                return 65
+                self.lumi = 65
+                return self.lumi
             if value >= 1200000 and value < 1350000:
-                return 60
+                self.lumi = 60
+                return self.lumi
             if value >= 1350000 and value < 1500000:
-                return 55
+                self.lumi = 55
+                return self.lumi
             if value >= 1500000 and value < 1650000:
-                return 50
+                self.lumi = 50
+                return self.lumi
             if value >= 1650000 and value < 1800000:
-                return 45
+                self.lumi = 45
+                return self.lumi
             if value >= 1800000 and value < 1950000:
-                return 40
+                self.lumi = 40
+                return self.lumi
             if value >= 1950000 and value < 2100000:
-                return 35
+                self.lumi = 35
+                return self.lumi
             if value >= 2100000 and value < 2250000:
-                return 30
+                self.lumi = 30
+                return self.lumi
             if value >= 2250000 and value < 2400000:
-                return 25
+                self.lumi = 25
+                return self.lumi
             if value >= 2400000 and value < 2550000:
-                return 20
+                self.lumi = 20
+                return self.lumi
             if value >= 2550000 and value < 2700000:
-                return 15
+                self.lumi = 15
+                return self.lumi
             if value >= 2700000 and value < 2850000:
-                return 10
+                self.lumi = 10
+                return self.lumi
             if value >= 2850000 and value < 3000000:
-                return 5
+                self.lumi = 5
+                return self.lumi
             if value >= 3000000:
-                return 0
+                self.lumi = 0
+                return self.lumi
             
             return switcher.get(value, "nothing")
         except KeyboardInterrupt:
-            return self.auxLumi
+            return auxLumi
+    # ----------------------------------------------------------------- SET -----------------------------------------------------------------
+    def setTemp(self, temp):
+        self.temp = temp
 
+    def setLumi(self, lumi):
+        self.lumi = lumi
+
+    def setPres(self):
+        return self.pres
+
+    def getAll (self):
+        self.temp = self.getTemp()
+        self.lumi = self.getLumi()
+        self.pres = self.getPres()
+        all = {
+            "temp" : self.temp,
+            "lumi" : self.lumi,
+            "pres" : self.pres
+        }
+        res = json.dumps(all)
+        return  res
+    
+   # ----------------------------------------------------------------- PRINT ----------------------------------------------------------------- 
+    def printAll(self):
+        self.getAll()
+        if self.pres == 0:
+            return f'Temperatura: {self.temp} ºC  ' + f'Luminosidade: {self.lumi} %  ' + 'A sala está vazia'
+        else:
+            return f'Temperatura: {self.temp} ºC  ' + f'Luminosidade: {self.lumi} %  ' + 'Há alguém na sala'
+    
 if __name__ == '__main__':
     while True:
-        val = leituraSensores()
-        print("Presença")
-        print(val.getPres())
-        print("Temperatura")
-        print(val.getTemp())
-        print("Luminosidade")
-        print(val.getLumi())
-        print("------------------")
+        val = Variaveis()
+        print(val.printAll())
     
